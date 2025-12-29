@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ford Manager Hub - Compact Widget</title>
+    <title>Ford Manager Hub - Widget Only</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Ford Blue Configuration */
         .bg-ford-blue { background-color: #003478; }
         .text-ford-blue { color: #003478; }
         .hover-bg-ford-dark:hover { background-color: #002a60; }
         
-        /* Smooth Accordion Transition */
+        /* Accordion Animation */
         .details-panel {
             transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
             max-height: 0;
@@ -18,22 +19,19 @@
             overflow: hidden;
         }
         .details-panel.open {
-            max-height: 200px; /* Adjust based on content */
+            max-height: 300px;
             opacity: 1;
         }
         
-        /* Rotate Chevron */
+        /* Chevron Rotation */
         .chevron { transition: transform 0.2s; }
         .chevron.rotate { transform: rotate(180deg); }
 
+        /* General Body Settings - PURE WHITE */
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f3f4f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            background-color: #ffffff; /* Pure White */
+            margin: 20px; /* Small margin so it's not stuck to the browser edge */
         }
     </style>
 </head>
@@ -56,9 +54,7 @@
             <div class="group request-item bg-white" id="req-1">
                 <div class="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer" onclick="toggleDetails('details-1', 'chev-1')">
                     <input type="checkbox" class="request-checkbox mr-3 w-4 h-4" onclick="event.stopPropagation(); updateBulkButton()">
-                    
                     <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200 mr-3">SM</div>
-                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
                             <h3 class="text-sm font-bold text-gray-800 truncate">Sarah Miller</h3>
@@ -66,10 +62,8 @@
                         </div>
                         <div class="text-xs text-gray-400 truncate">PTO &bull; Senior Analyst</div>
                     </div>
-
                     <svg id="chev-1" class="chevron w-4 h-4 text-gray-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-
                 <div id="details-1" class="details-panel bg-gray-50 border-t border-gray-100">
                     <div class="p-3 pl-14">
                         <p class="text-xs text-green-700 flex items-center mb-2">
@@ -88,7 +82,6 @@
                 <div class="flex items-center px-4 py-3 hover:bg-amber-50/50 cursor-pointer transition-colors" onclick="toggleDetails('details-2', 'chev-2')">
                     <input type="checkbox" class="request-checkbox mr-3 w-4 h-4" onclick="event.stopPropagation(); updateBulkButton()">
                     <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200 mr-3">JC</div>
-                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
                             <h3 class="text-sm font-bold text-gray-800 truncate">James Chen</h3>
@@ -102,10 +95,8 @@
                             </span>
                         </div>
                     </div>
-
                     <svg id="chev-2" class="chevron w-4 h-4 text-gray-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-
                 <div id="details-2" class="details-panel bg-amber-50 border-t border-amber-100">
                     <div class="p-3 pl-14">
                         <div class="text-xs text-amber-800 mb-2">
@@ -136,7 +127,6 @@
                     </div>
                     <svg id="chev-3" class="chevron w-4 h-4 text-gray-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-
                 <div id="details-3" class="details-panel bg-gray-50 border-t border-gray-100">
                     <div class="p-3 pl-14">
                         <p class="text-xs text-green-700 flex items-center mb-2">
@@ -162,17 +152,13 @@
     </div>
 
     <script>
-        // Accordion Toggle Logic
         function toggleDetails(id, chevId) {
             const panel = document.getElementById(id);
             const chev = document.getElementById(chevId);
-            
-            // Toggle Open class
             panel.classList.toggle('open');
             chev.classList.toggle('rotate');
         }
 
-        // --- Bulk Selection Logic (Same as before) ---
         function toggleAll(source) {
             const checkboxes = document.querySelectorAll('.request-checkbox');
             checkboxes.forEach(cb => cb.checked = source.checked);
@@ -198,7 +184,6 @@
             }
         }
 
-        // Demo Removal Logic
         function approveSelected() {
             const checkboxes = document.querySelectorAll('.request-checkbox:checked');
             if(checkboxes.length > 0) {
@@ -219,7 +204,6 @@
         function resetUI() {
             document.getElementById('selectAll').checked = false;
             updateBulkButton();
-            // Update count
             const remaining = document.querySelectorAll('.request-item:not([style*="display: none"])').length;
             document.getElementById('pendingCount').innerText = remaining;
         }
