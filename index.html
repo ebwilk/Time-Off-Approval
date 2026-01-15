@@ -29,14 +29,7 @@
             --col-orange: #fb5d01;
         }
 
-        /* Essential for h-full to work */
-        html, body { height: 100%; margin: 0; padding: 0; }
         body { background-color: transparent; }
-
-        /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 3px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
 
         /* --- LIQUID GLASS STYLES --- */
         .glass-container {
@@ -120,13 +113,13 @@
 <body class="font-sans text-slate-800 p-0">
 
     <!-- WIDGET CONTAINER 
-         - Changed height to h-full (fills the parent container)
-         - Added min-h-[500px] (ensures it never shrinks too small)
+         - Changed from fixed h-[500px] to h-auto min-h-[500px]
+         - Removed overflow-hidden so content flows naturally
     -->
-    <div class="w-full glass-container rounded-xl flex flex-col overflow-hidden relative h-full min-h-[500px]">
+    <div class="w-full glass-container rounded-xl flex flex-col relative h-auto min-h-[500px]">
         
         <!-- HEADER -->
-        <div class="liquid-header px-4 py-3 flex items-center justify-between shrink-0 z-20 shadow-md">
+        <div class="liquid-header px-4 py-3 flex items-center justify-between shrink-0 z-20 shadow-md rounded-t-xl">
             <div class="flex items-center gap-3">
                 <!-- Select All Checkbox -->
                 <div class="bg-white/10 p-1.5 rounded flex items-center justify-center">
@@ -140,8 +133,8 @@
             </div>
         </div>
 
-        <!-- LIST CONTENT -->
-        <div id="requestList" class="flex-1 overflow-y-auto custom-scroll bg-slate-50/50 p-2 space-y-2">
+        <!-- LIST CONTENT: Removed overflow-y-auto to allow full height expansion -->
+        <div id="requestList" class="flex-1 bg-slate-50/50 p-2 space-y-2">
             
             <!-- Request 1: Henry Fitz -->
             <div id="req-1" class="glass-card rounded-lg overflow-hidden group transition-all">
@@ -252,7 +245,7 @@
         </div>
 
         <!-- FOOTER: Bulk Actions -->
-        <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 px-4 py-3 flex justify-between items-center shrink-0 z-20">
+        <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 px-4 py-3 flex justify-between items-center shrink-0 z-20 rounded-b-xl">
             <span class="text-[10px] text-slate-500 font-medium" id="selectionText">Select items above</span>
             
             <button id="bulkApproveBtn" disabled onclick="approveSelected()" class="glossy-btn-disabled px-4 py-1.5 text-[10px] font-bold text-white rounded flex items-center gap-1.5 transition-all shadow-sm">
