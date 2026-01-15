@@ -3,139 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ford Manager Hub - Widget Only</title>
+    <title>Ford Time Off Requests</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        /* Ford Blue Configuration */
-        .bg-ford-blue { background-color: #003478; }
-        .text-ford-blue { color: #003478; }
-        .hover-bg-ford-dark:hover { background-color: #002a60; }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        .slide-out { animation: slideOut 0.3s ease-in forwards; }
+        .expand-vertical { transition: max-height 0.3s ease-out, opacity 0.3s ease-out; max-height: 0; opacity: 0; overflow: hidden; }
+        .expand-vertical.open { max-height: 200px; opacity: 1; }
+        .rotate-180 { transform: rotate(180deg); }
         
-        /* Accordion Animation */
-        .details-panel {
-            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            max-height: 0;
-            opacity: 0;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideOut { to { transform: translateX(100%); opacity: 0; height: 0; padding: 0; margin: 0; } }
+
+        /* Ford Colors */
+        :root {
+            --ford-blue: #003478;
+            --col-green: #02b547;
+            --col-blue: #2576fe;
+            --col-orange: #fb5d01;
+        }
+
+        body { background-color: transparent; }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 3px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
+        /* --- LIQUID GLASS STYLES --- */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 52, 120, 0.1);
+        }
+
+        .liquid-header {
+            background: linear-gradient(135deg, #003478 0%, #0055a6 100%);
+            position: relative;
             overflow: hidden;
         }
-        .details-panel.open {
-            max-height: 300px;
-            opacity: 1;
+        .liquid-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,1) 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 85, 166, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 52, 120, 0.08);
+        }
+
+        .glossy-btn-primary {
+            background: linear-gradient(to bottom, #003478, #002a60);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .glossy-btn-primary:hover {
+            background: linear-gradient(to bottom, #004096, #003478);
         }
         
-        /* Chevron Rotation */
-        .chevron { transition: transform 0.2s; }
-        .chevron.rotate { transform: rotate(180deg); }
+        .glossy-btn-disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
 
-        /* General Body Settings - PURE WHITE */
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffffff; /* Pure White */
-            margin: 20px; /* Small margin so it's not stuck to the browser edge */
+        /* Checkbox */
+        .custom-checkbox {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #94a3b8;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            background-color: white;
+        }
+        .custom-checkbox:checked {
+            background-color: #003478;
+            border-color: #003478;
+        }
+        .custom-checkbox:checked::after {
+            content: '✓';
+            color: white;
+            font-size: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
+<body class="font-sans text-slate-800 p-0">
 
-    <div class="w-full max-w-md bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden flex flex-col h-[450px]">
-      
-        <div class="bg-ford-blue px-4 py-3 flex justify-between items-center shrink-0">
-            <div class="flex items-center space-x-3">
-                <input type="checkbox" id="selectAll" class="rounded w-4 h-4 cursor-pointer" onclick="toggleAll(this)">
-                <h2 class="text-white font-semibold text-sm tracking-wide">Time Off Requests</h2>
+    <!-- WIDGET CONTAINER 
+         - Changed height from 450px to 340px to reduce whitespace
+    -->
+    <div class="w-full glass-container rounded-xl flex flex-col overflow-hidden relative h-[340px]">
+        
+        <!-- HEADER -->
+        <div class="liquid-header px-4 py-3 flex items-center justify-between shrink-0 z-20 shadow-md">
+            <div class="flex items-center gap-3">
+                <!-- Select All Checkbox -->
+                <div class="bg-white/10 p-1.5 rounded flex items-center justify-center">
+                    <input type="checkbox" id="selectAll" class="custom-checkbox" onclick="toggleAll(this)">
+                </div>
+                <h2 class="text-xs font-bold text-white uppercase tracking-wide leading-none drop-shadow-sm">Time Off Requests</h2>
             </div>
-            <span class="bg-blue-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-400">
-                <span id="pendingCount">3</span> Pending
-            </span>
+            
+            <div class="bg-white/10 backdrop-blur-sm px-2 py-1 rounded-full border border-white/20">
+                <span class="text-[10px] text-white font-bold"><span id="pendingCount">3</span> Pending</span>
+            </div>
         </div>
 
-        <div class="overflow-y-auto flex-1 divide-y divide-gray-100" id="requestList">
+        <!-- LIST CONTENT -->
+        <div id="requestList" class="flex-1 overflow-y-auto custom-scroll bg-slate-50/50 p-2 space-y-2">
             
-            <div class="group request-item bg-white" id="req-1">
-                <div class="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer" onclick="toggleDetails('details-1', 'chev-1')">
-                    <input type="checkbox" class="request-checkbox mr-3 w-4 h-4" onclick="event.stopPropagation(); updateBulkButton()">
-                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200 mr-3">SM</div>
+            <!-- Request 1: Henry Fitz -->
+            <div id="req-1" class="glass-card rounded-lg overflow-hidden group transition-all">
+                <!-- Main Row -->
+                <div class="p-3 flex items-center gap-3 cursor-pointer hover:bg-white/80 transition-colors" onclick="toggleDetails('details-1', 'chev-1')">
+                    <input type="checkbox" class="request-checkbox custom-checkbox shrink-0" onclick="event.stopPropagation(); updateBulkButton()">
+                    
+                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-slate-200 shrink-0">HF</div>
+                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
-                            <h3 class="text-sm font-bold text-gray-800 truncate">Sarah Miller</h3>
-                            <span class="text-xs text-gray-500">Oct 24 (5d)</span>
+                            <h3 class="text-xs font-bold text-slate-800 truncate">Henry Fitz</h3>
+                            <span class="text-[10px] text-slate-500 font-medium">Feb 12 (5d)</span>
                         </div>
-                        <div class="text-xs text-gray-400 truncate">PTO &bull; Senior Analyst</div>
+                        <p class="text-[10px] text-slate-400 truncate">PTO • Senior Analyst</p>
                     </div>
-                    <svg id="chev-1" class="chevron w-4 h-4 text-gray-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    
+                    <i id="chev-1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
                 </div>
-                <div id="details-1" class="details-panel bg-gray-50 border-t border-gray-100">
+
+                <!-- Details Panel -->
+                <div id="details-1" class="expand-vertical bg-slate-50/80 border-t border-slate-100/50">
                     <div class="p-3 pl-14">
-                        <p class="text-xs text-green-700 flex items-center mb-2">
-                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            No scheduling conflicts.
-                        </p>
+                        <div class="flex items-center gap-1.5 text-[10px] text-green-600 mb-3 bg-green-50 w-fit px-2 py-1 rounded border border-green-100">
+                            <i data-lucide="check-circle-2" class="w-3 h-3"></i>
+                            <span class="font-bold">No scheduling conflicts</span>
+                        </div>
                         <div class="flex gap-2">
-                            <button class="px-3 py-1 text-xs border border-gray-300 rounded bg-white hover:bg-gray-100" onclick="removeCard(this)">Deny</button>
-                            <button class="px-3 py-1 text-xs text-white bg-ford-blue rounded hover:bg-blue-900" onclick="removeCard(this)">Approve</button>
+                            <button onclick="removeCard(this)" class="flex-1 py-1.5 bg-white border border-slate-200 text-slate-600 rounded text-[10px] font-bold hover:bg-slate-50 hover:text-red-600 transition-colors">Deny</button>
+                            <button onclick="removeCard(this)" class="flex-1 py-1.5 glossy-btn-primary text-white rounded text-[10px] font-bold transition-transform active:scale-95">Approve</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="group request-item bg-white" id="req-2">
-                <div class="flex items-center px-4 py-3 hover:bg-amber-50/50 cursor-pointer transition-colors" onclick="toggleDetails('details-2', 'chev-2')">
-                    <input type="checkbox" class="request-checkbox mr-3 w-4 h-4" onclick="event.stopPropagation(); updateBulkButton()">
-                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200 mr-3">JC</div>
+            <!-- Request 2: Anne Ryder (Conflict) -->
+            <div id="req-2" class="glass-card rounded-lg overflow-hidden group transition-all">
+                <div class="p-3 flex items-center gap-3 cursor-pointer hover:bg-orange-50/30 transition-colors" onclick="toggleDetails('details-2', 'chev-2')">
+                    <input type="checkbox" class="request-checkbox custom-checkbox shrink-0" onclick="event.stopPropagation(); updateBulkButton()">
+                    
+                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-slate-200 shrink-0">AR</div>
+                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
-                            <h3 class="text-sm font-bold text-gray-800 truncate">James Chen</h3>
-                            <span class="text-xs text-amber-700 font-bold">Nov 02 (2d)</span>
+                            <h3 class="text-xs font-bold text-slate-800 truncate">Anne Ryder</h3>
+                            <span class="text-[10px] text-[#fb5d01] font-bold">Feb 27 (2d)</span>
                         </div>
-                        <div class="text-xs text-gray-400 flex items-center">
-                            Personal
-                            <span class="ml-2 flex items-center text-amber-600 font-medium text-[10px] bg-amber-100 px-1.5 rounded">
-                                <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                                Conflict
+                        <div class="flex items-center gap-2">
+                            <p class="text-[10px] text-slate-400 truncate">Personal</p>
+                            <span class="text-[9px] bg-orange-50 text-[#fb5d01] px-1.5 py-0.5 rounded border border-orange-100 flex items-center gap-1 font-bold">
+                                <i data-lucide="alert-triangle" class="w-2.5 h-2.5"></i> Conflict
                             </span>
                         </div>
                     </div>
-                    <svg id="chev-2" class="chevron w-4 h-4 text-gray-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    
+                    <i id="chev-2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
                 </div>
-                <div id="details-2" class="details-panel bg-amber-50 border-t border-amber-100">
+
+                <div id="details-2" class="expand-vertical bg-orange-50/50 border-t border-orange-100/50">
                     <div class="p-3 pl-14">
-                        <div class="text-xs text-amber-800 mb-2">
-                            <p class="font-bold">Team out on Nov 02:</p>
-                            <ul class="list-disc list-inside opacity-80">
+                        <div class="text-[10px] text-slate-600 mb-3">
+                            <p class="font-bold text-[#fb5d01] mb-1">Team out on Feb 27:</p>
+                            <ul class="list-disc list-inside opacity-80 space-y-0.5">
                                 <li>Mike Ross (Sick)</li>
                                 <li>Linda Kim (PTO)</li>
                             </ul>
                         </div>
                         <div class="flex gap-2">
-                            <button class="px-3 py-1 text-xs border border-amber-300 text-amber-900 rounded bg-white hover:bg-amber-100" onclick="removeCard(this)">Deny</button>
-                            <button class="px-3 py-1 text-xs text-white bg-ford-blue rounded hover:bg-blue-900" onclick="removeCard(this)">Approve Anyway</button>
+                            <button onclick="removeCard(this)" class="flex-1 py-1.5 bg-white border border-slate-200 text-slate-600 rounded text-[10px] font-bold hover:bg-slate-50 hover:text-red-600 transition-colors">Deny</button>
+                            <button onclick="removeCard(this)" class="flex-1 py-1.5 glossy-btn-primary text-white rounded text-[10px] font-bold transition-transform active:scale-95">Approve Anyway</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="group request-item bg-white" id="req-3">
-                <div class="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer" onclick="toggleDetails('details-3', 'chev-3')">
-                    <input type="checkbox" class="request-checkbox mr-3 w-4 h-4" onclick="event.stopPropagation(); updateBulkButton()">
-                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200 mr-3">AR</div>
+            <!-- Request 3: Todd Lu -->
+            <div id="req-3" class="glass-card rounded-lg overflow-hidden group transition-all">
+                <div class="p-3 flex items-center gap-3 cursor-pointer hover:bg-white/80 transition-colors" onclick="toggleDetails('details-3', 'chev-3')">
+                    <input type="checkbox" class="request-checkbox custom-checkbox shrink-0" onclick="event.stopPropagation(); updateBulkButton()">
+                    
+                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-slate-200 shrink-0">TL</div>
+                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
-                            <h3 class="text-sm font-bold text-gray-800 truncate">Alex Rivera</h3>
-                            <span class="text-xs text-gray-500">Nov 15 (1d)</span>
+                            <h3 class="text-xs font-bold text-slate-800 truncate">Todd Lu</h3>
+                            <span class="text-[10px] text-slate-500 font-medium">Mar 05 (1d)</span>
                         </div>
-                        <div class="text-xs text-gray-400 truncate">Jury Duty &bull; UX Designer</div>
+                        <p class="text-[10px] text-slate-400 truncate">Jury Duty • UX Designer</p>
                     </div>
-                    <svg id="chev-3" class="chevron w-4 h-4 text-gray-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    
+                    <i id="chev-3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
                 </div>
-                <div id="details-3" class="details-panel bg-gray-50 border-t border-gray-100">
+
+                <div id="details-3" class="expand-vertical bg-slate-50/80 border-t border-slate-100/50">
                     <div class="p-3 pl-14">
-                        <p class="text-xs text-green-700 flex items-center mb-2">
-                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            No scheduling conflicts.
-                        </p>
+                        <div class="flex items-center gap-1.5 text-[10px] text-green-600 mb-3 bg-green-50 w-fit px-2 py-1 rounded border border-green-100">
+                            <i data-lucide="check-circle-2" class="w-3 h-3"></i>
+                            <span class="font-bold">No scheduling conflicts</span>
+                        </div>
                         <div class="flex gap-2">
-                            <button class="px-3 py-1 text-xs border border-gray-300 rounded bg-white hover:bg-gray-100" onclick="removeCard(this)">Deny</button>
-                            <button class="px-3 py-1 text-xs text-white bg-ford-blue rounded hover:bg-blue-900" onclick="removeCard(this)">Approve</button>
+                            <button onclick="removeCard(this)" class="flex-1 py-1.5 bg-white border border-slate-200 text-slate-600 rounded text-[10px] font-bold hover:bg-slate-50 hover:text-red-600 transition-colors">Deny</button>
+                            <button onclick="removeCard(this)" class="flex-1 py-1.5 glossy-btn-primary text-white rounded text-[10px] font-bold transition-transform active:scale-95">Approve</button>
                         </div>
                     </div>
                 </div>
@@ -143,20 +248,34 @@
 
         </div>
 
-        <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex justify-between items-center shrink-0 h-14">
-            <span class="text-[10px] text-gray-500 font-medium" id="selectionText">Select items above</span>
-            <button id="bulkApproveBtn" disabled onclick="approveSelected()" class="flex items-center justify-center px-4 py-1.5 text-xs font-semibold text-white bg-ford-blue rounded opacity-50 cursor-not-allowed transition-all">
-                Approve Selected
+        <!-- FOOTER: Bulk Actions -->
+        <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 px-4 py-3 flex justify-between items-center shrink-0 z-20">
+            <span class="text-[10px] text-slate-500 font-medium" id="selectionText">Select items above</span>
+            
+            <button id="bulkApproveBtn" disabled onclick="approveSelected()" class="glossy-btn-disabled px-4 py-1.5 text-[10px] font-bold text-white rounded flex items-center gap-1.5 transition-all shadow-sm">
+                <span>Approve Selected</span>
+                <i data-lucide="check-check" class="w-3 h-3"></i>
             </button>
         </div>
+
     </div>
 
+    <!-- SCRIPT -->
     <script>
+        lucide.createIcons();
+
         function toggleDetails(id, chevId) {
             const panel = document.getElementById(id);
             const chev = document.getElementById(chevId);
-            panel.classList.toggle('open');
-            chev.classList.toggle('rotate');
+            
+            // Toggle open class
+            if (panel.classList.contains('open')) {
+                panel.classList.remove('open');
+                chev.style.transform = 'rotate(0deg)';
+            } else {
+                panel.classList.add('open');
+                chev.style.transform = 'rotate(180deg)';
+            }
         }
 
         function toggleAll(source) {
@@ -175,39 +294,65 @@
 
             if (checkedCount > 0) {
                 btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                btn.classList.add('cursor-pointer', 'hover-bg-ford-dark');
+                btn.classList.remove('glossy-btn-disabled');
+                btn.classList.add('glossy-btn-primary');
             } else {
                 btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                btn.classList.remove('cursor-pointer', 'hover-bg-ford-dark');
+                btn.classList.remove('glossy-btn-primary');
+                btn.classList.add('glossy-btn-disabled');
             }
         }
 
         function approveSelected() {
             const checkboxes = document.querySelectorAll('.request-checkbox:checked');
             if(checkboxes.length > 0) {
-                checkboxes.forEach(cb => {
-                    const card = cb.closest('.request-item');
-                    card.style.display = 'none';
-                });
-                resetUI();
+                const btn = document.getElementById('bulkApproveBtn');
+                btn.innerHTML = 'Approving... <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>';
+                
+                setTimeout(() => {
+                    checkboxes.forEach(cb => {
+                        const card = cb.closest('.glass-card');
+                        card.classList.add('slide-out');
+                    });
+                    
+                    setTimeout(() => {
+                        resetUI();
+                        btn.innerHTML = '<span>Approve Selected</span><i data-lucide="check-check" class="w-3 h-3"></i>';
+                    }, 400);
+                }, 600);
             }
         }
 
         function removeCard(btn) {
-            const card = btn.closest('.request-item');
-            card.style.display = 'none';
-            resetUI();
+            const card = btn.closest('.glass-card');
+            card.classList.add('slide-out');
+            setTimeout(() => {
+                card.style.display = 'none'; // Ensure layout reflows
+                resetUI();
+            }, 300);
         }
 
         function resetUI() {
             document.getElementById('selectAll').checked = false;
             updateBulkButton();
-            const remaining = document.querySelectorAll('.request-item:not([style*="display: none"])').length;
+            // Count visible items
+            const allItems = document.querySelectorAll('#requestList > div');
+            const hiddenItems = document.querySelectorAll('.slide-out');
+            const remaining = allItems.length - hiddenItems.length;
+            
             document.getElementById('pendingCount').innerText = remaining;
+            
+            if (remaining === 0) {
+                const list = document.getElementById('requestList');
+                list.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-slate-400 fade-in">
+                        <i data-lucide="check-circle" class="w-8 h-8 mb-2 opacity-50"></i>
+                        <p class="text-xs font-medium">All caught up!</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
         }
     </script>
-
 </body>
 </html>
