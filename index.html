@@ -117,15 +117,12 @@
 </head>
 <body class="font-sans text-slate-800 p-0">
 
-    <!-- WIDGET CONTAINER 
-         - Reduced height to h-[400px] to eliminate whitespace
-    -->
+    <!-- WIDGET CONTAINER -->
     <div class="w-full glass-container rounded-xl flex flex-col overflow-hidden relative h-[400px]">
         
-        <!-- HEADER -->
-        <div class="liquid-header px-4 py-3 flex items-center justify-between shrink-0 z-20 shadow-md rounded-t-xl">
+        <!-- HEADER: Added 'sticky top-0' and high z-index -->
+        <div class="liquid-header px-4 py-3 flex items-center justify-between shrink-0 z-50 shadow-md sticky top-0">
             <div class="flex items-center gap-3">
-                <!-- Select All Checkbox -->
                 <div class="bg-white/10 p-1.5 rounded flex items-center justify-center">
                     <input type="checkbox" id="selectAll" class="custom-checkbox" onclick="toggleAll(this)">
                 </div>
@@ -138,16 +135,13 @@
         </div>
 
         <!-- LIST CONTENT -->
-        <div id="requestList" class="flex-1 overflow-y-auto custom-scroll bg-slate-50/50 p-2 space-y-2">
+        <div id="requestList" class="flex-1 overflow-y-auto custom-scroll bg-slate-50/50 p-2 space-y-2 relative z-0">
             
             <!-- Request 1: Henry Fitz -->
             <div id="req-1" class="glass-card rounded-lg overflow-hidden group transition-all">
-                <!-- Main Row -->
                 <div class="p-3 flex items-center gap-3 cursor-pointer hover:bg-white/80 transition-colors" onclick="toggleDetails('details-1', 'chev-1')">
                     <input type="checkbox" class="request-checkbox custom-checkbox shrink-0" onclick="event.stopPropagation(); updateBulkButton()">
-                    
                     <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-slate-200 shrink-0">HF</div>
-                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
                             <h3 class="text-xs font-bold text-slate-800 truncate">Henry Fitz</h3>
@@ -155,11 +149,8 @@
                         </div>
                         <p class="text-[10px] text-slate-400 truncate">PTO • Senior Analyst</p>
                     </div>
-                    
                     <i id="chev-1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
                 </div>
-
-                <!-- Details Panel -->
                 <div id="details-1" class="expand-vertical bg-slate-50/80 border-t border-slate-100/50">
                     <div class="p-3 pl-14">
                         <div class="flex items-center gap-1.5 text-[10px] text-green-600 mb-3 bg-green-50 w-fit px-2 py-1 rounded border border-green-100">
@@ -174,13 +165,11 @@
                 </div>
             </div>
 
-            <!-- Request 2: Anne Ryder (Conflict) -->
+            <!-- Request 2: Anne Ryder -->
             <div id="req-2" class="glass-card rounded-lg overflow-hidden group transition-all">
                 <div class="p-3 flex items-center gap-3 cursor-pointer hover:bg-orange-50/30 transition-colors" onclick="toggleDetails('details-2', 'chev-2')">
                     <input type="checkbox" class="request-checkbox custom-checkbox shrink-0" onclick="event.stopPropagation(); updateBulkButton()">
-                    
                     <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-slate-200 shrink-0">AR</div>
-                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
                             <h3 class="text-xs font-bold text-slate-800 truncate">Anne Ryder</h3>
@@ -193,10 +182,8 @@
                             </span>
                         </div>
                     </div>
-                    
                     <i id="chev-2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
                 </div>
-
                 <div id="details-2" class="expand-vertical bg-orange-50/50 border-t border-orange-100/50">
                     <div class="p-3 pl-14">
                         <div class="text-[10px] text-slate-600 mb-3">
@@ -218,9 +205,7 @@
             <div id="req-3" class="glass-card rounded-lg overflow-hidden group transition-all">
                 <div class="p-3 flex items-center gap-3 cursor-pointer hover:bg-white/80 transition-colors" onclick="toggleDetails('details-3', 'chev-3')">
                     <input type="checkbox" class="request-checkbox custom-checkbox shrink-0" onclick="event.stopPropagation(); updateBulkButton()">
-                    
                     <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-slate-200 shrink-0">TL</div>
-                    
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
                             <h3 class="text-xs font-bold text-slate-800 truncate">Todd Lu</h3>
@@ -228,10 +213,8 @@
                         </div>
                         <p class="text-[10px] text-slate-400 truncate">Jury Duty • UX Designer</p>
                     </div>
-                    
                     <i id="chev-3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
                 </div>
-
                 <div id="details-3" class="expand-vertical bg-slate-50/80 border-t border-slate-100/50">
                     <div class="p-3 pl-14">
                         <div class="flex items-center gap-1.5 text-[10px] text-green-600 mb-3 bg-green-50 w-fit px-2 py-1 rounded border border-green-100">
@@ -249,9 +232,8 @@
         </div>
 
         <!-- FOOTER: Bulk Actions -->
-        <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 px-4 py-3 flex justify-between items-center shrink-0 z-20 rounded-b-xl">
+        <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 px-4 py-3 flex justify-between items-center shrink-0 z-50 sticky bottom-0">
             <span class="text-[10px] text-slate-500 font-medium" id="selectionText">Select items above</span>
-            
             <button id="bulkApproveBtn" disabled onclick="approveSelected()" class="glossy-btn-disabled px-4 py-1.5 text-[10px] font-bold text-white rounded flex items-center gap-1.5 transition-all shadow-sm">
                 <span>Approve Selected</span>
                 <i data-lucide="check-check" class="w-3 h-3"></i>
@@ -267,8 +249,6 @@
         function toggleDetails(id, chevId) {
             const panel = document.getElementById(id);
             const chev = document.getElementById(chevId);
-            
-            // Toggle open class
             if (panel.classList.contains('open')) {
                 panel.classList.remove('open');
                 chev.style.transform = 'rotate(0deg)';
@@ -289,9 +269,7 @@
             const checkedCount = document.querySelectorAll('.request-checkbox:checked').length;
             const btn = document.getElementById('bulkApproveBtn');
             const selectionText = document.getElementById('selectionText');
-
             selectionText.textContent = checkedCount > 0 ? `${checkedCount} selected` : "Select items above";
-
             if (checkedCount > 0) {
                 btn.disabled = false;
                 btn.classList.remove('glossy-btn-disabled');
@@ -308,13 +286,11 @@
             if(checkboxes.length > 0) {
                 const btn = document.getElementById('bulkApproveBtn');
                 btn.innerHTML = 'Approving... <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>';
-                
                 setTimeout(() => {
                     checkboxes.forEach(cb => {
                         const card = cb.closest('.glass-card');
                         card.classList.add('slide-out');
                     });
-                    
                     setTimeout(() => {
                         resetUI();
                         btn.innerHTML = '<span>Approve Selected</span><i data-lucide="check-check" class="w-3 h-3"></i>';
@@ -327,7 +303,7 @@
             const card = btn.closest('.glass-card');
             card.classList.add('slide-out');
             setTimeout(() => {
-                card.style.display = 'none'; // Ensure layout reflows
+                card.style.display = 'none'; 
                 resetUI();
             }, 300);
         }
@@ -335,13 +311,10 @@
         function resetUI() {
             document.getElementById('selectAll').checked = false;
             updateBulkButton();
-            // Count visible items
             const allItems = document.querySelectorAll('#requestList > div');
             const hiddenItems = document.querySelectorAll('.slide-out');
             const remaining = allItems.length - hiddenItems.length;
-            
             document.getElementById('pendingCount').innerText = remaining;
-            
             if (remaining === 0) {
                 const list = document.getElementById('requestList');
                 list.innerHTML = `
