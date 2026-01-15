@@ -29,6 +29,8 @@
             --col-orange: #fb5d01;
         }
 
+        /* Essential for h-full to work */
+        html, body { height: 100%; margin: 0; padding: 0; }
         body { background-color: transparent; }
 
         /* Custom Scrollbar */
@@ -118,9 +120,10 @@
 <body class="font-sans text-slate-800 p-0">
 
     <!-- WIDGET CONTAINER 
-         - Changed height to h-[400px] to match Team Training widget
+         - Changed height to h-full (fills the parent container)
+         - Added min-h-[500px] (ensures it never shrinks too small)
     -->
-    <div class="w-full glass-container rounded-xl flex flex-col overflow-hidden relative h-[600px]">
+    <div class="w-full glass-container rounded-xl flex flex-col overflow-hidden relative h-full min-h-[500px]">
         
         <!-- HEADER -->
         <div class="liquid-header px-4 py-3 flex items-center justify-between shrink-0 z-20 shadow-md">
